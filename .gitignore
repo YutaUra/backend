@@ -1,0 +1,3 @@
+backend/settings/dev.py
+venv
+.idea
