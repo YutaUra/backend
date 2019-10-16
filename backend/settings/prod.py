@@ -1,5 +1,6 @@
 from .common import *
 import django_heroku
+import dj_database_url
 
 DEBUG = False
 
@@ -9,10 +10,23 @@ ALLOWED_HOSTS += [
 ]
 
 FRONTEND_POINT = {
-    # 'PROTOCOL': 'http',
-    # 'DOMAIN': 'localhost:8080',
+    'PROTOCOL': 'https',
+    'DOMAIN': 'tutorportal-web.herokuapp.com/',
 }
 
-# FRONTEND_URL = '%s://%s' % (FRONTEND_POINT['PROTOCOL'], FRONTEND_POINT['DOMAIN'])
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'name',
+        'USER': 'user',
+        'PASSWORD': '',
+        'HOST': 'host',
+        'PORT': '',
+    }
+}
+
+FRONTEND_URL = '%s://%s' % (FRONTEND_POINT['PROTOCOL'], FRONTEND_POINT['DOMAIN'])
+db_from_env = dj_database_url.config(conn_max_age=600, ssl_require=True)
+DATABASES['default'].update(db_from_env)
 
 django_heroku.settings(locals())
