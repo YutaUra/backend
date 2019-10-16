@@ -76,19 +76,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'backend.wsgi.application'
 
-# Database
-# https://docs.djangoproject.com/en/2.2/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'tutorportal',
-        'USER': 'yuuta3594',
-        'PASSWORD': 'thym3594',
-        'HOST': 'django-tutorportal2.caizbo93ln5z.us-east-2.rds.amazonaws.com',
-        'PORT': 3306,
-    }
-}
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
