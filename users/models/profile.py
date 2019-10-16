@@ -1,6 +1,6 @@
 from django.conf import settings
+import os
 import random
-from boto3.session import Session
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from .profile_manager import ProfileManager
@@ -12,15 +12,10 @@ GENDER = (
 
 
 def get_icons_list():
-    s3 = Session().client("s3")
-    response = s3.list_objects(
-        Bucket="tutorportal-static",
-        Prefix="static/media/users/icons"
-    )
-    return [(
-        "/".join(content["Key"].split("/")[1:]),
-        "/".join(content["Key"].split("/")[1:])
-    ) for content in response["Contents"]]
+    icon_dir = os.path.join(settings.BASE_DIR, 'staticfiles', 'user_icons')
+    return [(file_name,
+             file_name.split('.')[0].split('-')[1]
+             ) for file_name in os.listdir(icon_dir)]
 
 
 icons = get_icons_list()
