@@ -162,3 +162,6 @@ EMAIL_PORT = 465
 EMAIL_HOST_USER = 'info@tutor-portal.com'
 EMAIL_HOST_PASSWORD = 'thYm3594'
 EMAIL_USE_SSL = True
+
+# site configuration
+SITE_NAME = 'tutor portal'

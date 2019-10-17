@@ -11,7 +11,7 @@ ALLOWED_HOSTS += [
 
 FRONTEND_POINT = {
     'PROTOCOL': 'https',
-    'DOMAIN': 'tutorportal-web.herokuapp.com/',
+    'DOMAIN': 'tutorportal-web.herokuapp.com',
 }
 
 DATABASES = {

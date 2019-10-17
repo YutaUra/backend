@@ -1,1 +1,1 @@
-tutor portal - 会員登録
+{{ site_name }} - 会員登録

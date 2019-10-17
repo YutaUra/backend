@@ -3,11 +3,16 @@ from django.conf import settings
 from django.core.signing import dumps, loads, BadSignature, SignatureExpired
 from django.contrib.auth.models import Group
 from django.template.loader import get_template
+from django.utils.datetime_safe import datetime
 from rest_framework import permissions, generics
 
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
+from rest_framework_jwt.serializers import JSONWebTokenSerializer
+from rest_framework_jwt.settings import api_settings
+from rest_framework_jwt.utils import jwt_response_payload_handler
+from rest_framework_jwt.views import JSONWebTokenAPIView
 
 from users.models import User
 from users.serializers import UserSerializer
@@ -54,10 +59,14 @@ class UserCreateAPI(generics.CreateAPIView):
 
     @transaction.atomic
     def post(self, request, format=None):
+        no_active = User.objects.filter(is_active=False)
+        no_active.filter(pub_id=request.data.get('pub_id')).delete()
+        no_active.filter(email=request.data.get('email')).delete()
         serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
             user.is_active = False
+            user.save()
 
             # set Group Teacher or Student
             if user.get_user_position() == 'T':
@@ -75,6 +84,7 @@ class UserCreateAPI(generics.CreateAPIView):
                 'domain': settings.FRONTEND_POINT.get('DOMAIN'),
                 'token': dumps(user.pk),
                 'user': user,
+                'site_name': settings.SITE_NAME,
             }
 
             subject = get_template('users/mails/user_create/subject.txt').render(context)
@@ -107,3 +117,28 @@ def UserCreateVerify(request):
                     user.is_active = True
                     user.save()
                 return Response(status=status.HTTP_200_OK)
+
+
+class UserLogin(JSONWebTokenAPIView):
+    serializer_class = JSONWebTokenSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+
+        if serializer.is_valid():
+            user = serializer.object.get('user') or request.user
+            if not user.is_active:
+                return Response(data={'message': 'アクティベートされていません'}, status=status.HTTP_400_BAD_REQUEST)
+            token = serializer.object.get('token')
+            response_data = jwt_response_payload_handler(token, user, request)
+            response = Response(response_data)
+            if api_settings.JWT_AUTH_COOKIE:
+                expiration = (datetime.utcnow() +
+                              api_settings.JWT_EXPIRATION_DELTA)
+                response.set_cookie(api_settings.JWT_AUTH_COOKIE,
+                                    token,
+                                    expires=expiration,
+                                    httponly=True)
+            return response
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

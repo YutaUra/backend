@@ -61,7 +61,7 @@ class UserManager(BaseUserManager):
         return self.get_queryset().follower(pub_id)
 
     def is_exist_id(self, pub_id):
-        return pub_id in self.get_queryset().values_list('pub_id', flat=True)
+        return pub_id in self.get_queryset().filter(is_active=True).values_list('pub_id', flat=True)
 
     def is_exist_email(self, email):
-        return email in self.get_queryset().values_list('email', flat=True)
+        return email in self.get_queryset().filter(is_active=True).values_list('email', flat=True)
