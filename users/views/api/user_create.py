@@ -91,7 +91,7 @@ def UserCreateVerify(request):
     if request.method == 'POST':
         token = request.data.get('token')
         try:
-            user_pk = loads(token, max_age=60*60)
+            user_pk = loads(token, max_age=60 * 60)
         # 例外処理
         # 期限切れ, バッドトークン
         except (SignatureExpired, BadSignature):
