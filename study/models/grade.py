@@ -23,9 +23,8 @@ class School(models.Model):
 class Grade(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
     school = models.ForeignKey(to=School, on_delete=models.PROTECT,)
-    name = models.CharField(
+    name = models.IntegerField(
         _("学年(半角数字)"),
-        max_length=1,
     )
 
     class Meta:

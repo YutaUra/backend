@@ -6,13 +6,24 @@ from .subjects import Subject
 from .unit import Unit
 
 
+class Publisher(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
+    name = models.CharField(
+        _('出版社'),
+        max_length=20
+    )
+
+    def __str__(self):
+        return self.name
+
+
 class Textbook(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
     grade = models.ForeignKey(to=Grade, on_delete=models.PROTECT)
     subject = models.ForeignKey(to=Subject, on_delete=models.PROTECT)
-    publisher = models.CharField(
-        _('出版社'),
-        max_length=20,
+    publisher = models.ForeignKey(
+        to=Publisher,
+        on_delete=models.PROTECT,
         blank=True,
     )
     name = models.CharField(
