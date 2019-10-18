@@ -9,6 +9,7 @@ def base_create(klass, *args):
     :type args list of dict
     arg = kwargs
     """
+    objects = []
     for arg in args:
         obj = klass.objects.filter(**arg)
         if obj:
@@ -16,8 +17,9 @@ def base_create(klass, *args):
             continue
         else:
             obj = klass(**arg)
-            obj.save()
+            objects.append(obj)
             print('%s を作成します' % obj)
+    klass.objects.bulk_create(objects)
 
 
 def school_create():
