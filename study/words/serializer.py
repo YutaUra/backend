@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from study.models import Word, WordHistory
+from study.models import Word
+from study.words.session import WordPractice
 
 
 class WordSerializer(serializers.ModelSerializer):
@@ -8,11 +9,17 @@ class WordSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class WordHistorySerializer(serializers.ModelSerializer):
+class WordPracticeSerializer(serializers.ModelSerializer):
     class Meta:
-        model = WordHistory
+        model = WordPractice
         fields = (
+            'sub_session',
             'user',
             'word',
             'answer',
         )
+
+    @staticmethod
+    def bulk_create(*validated_data):
+        objs = [WordPractice(data) for data in validated_data]
+        WordPractice.objects.bulk_create(objs)

@@ -24,10 +24,3 @@ class Word(models.Model):
 
     def __str__(self):
         return 'word %s' % self.name
-
-
-class WordHistory(models.Model):
-    user = models.ForeignKey(to=User, on_delete=models.PROTECT)
-    word = models.ForeignKey(to=Word, on_delete=models.PROTECT, related_name='word')
-    answer = models.ForeignKey(to=Word, on_delete=models.PROTECT, related_name='answer')
-    created_at = models.DateTimeField(auto_now_add=True)
