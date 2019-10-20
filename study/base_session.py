@@ -8,7 +8,13 @@ class BaseSessionManager(models.Manager):
     use_in_migrations = True
 
     def create_or_get_current_session(self, user, **kwargs):
-        user_query = self.get_queryset().filter(user=user, **kwargs)
+        if isinstance(user, User):
+            user_query = self.get_queryset().filter(user=user, **kwargs)
+        else:
+            # AnonymousUser
+            obj = self.model(**kwargs)
+            obj.save()
+            return obj
         if user_query:
             session = user_query.latest('updated_at')
         else:
@@ -32,7 +38,7 @@ class BaseSession(models.Model):
     id,user, created_at, uploaded_at
     """
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
-    user = models.ForeignKey(to=User, on_delete=models.PROTECT)
+    user = models.ForeignKey(to=User, on_delete=models.PROTECT, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     objects = BaseSessionManager()
@@ -59,7 +65,7 @@ class BaseSubSession(BaseSession):
 class BaseSessionItem(models.Model):
     """id, user, sub_session, created_at"""
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
-    user = models.ForeignKey(to=User, on_delete=models.PROTECT)
+    user = models.ForeignKey(to=User, on_delete=models.PROTECT, blank=True, null=True)
     sub_session = models.ForeignKey(to=BaseSubSession, on_delete=models.PROTECT)
     created_at = models.DateTimeField(auto_now_add=True)
 

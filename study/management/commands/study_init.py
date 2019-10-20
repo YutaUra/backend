@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand
 
-from study.models import School, Grade, Subject, Unit, Publisher, Textbook, TextbookUnit, TextbookChapter, Word
+from study.models import School, Grade, Subject, Unit, Publisher, Textbook, TextbookUnit, TextbookChapter, Word, \
+    TextbookWord
 
 
 def base_create(klass, *args):
@@ -10,13 +11,13 @@ def base_create(klass, *args):
     arg = kwargs
     """
     objects = []
-    for arg in args:
-        obj = klass.objects.filter(**arg)
+    for kwargs in args:
+        obj = klass.objects.filter(**kwargs)
         if obj:
             print('%s は既に存在しています' % obj)
             continue
         else:
-            obj = klass(**arg)
+            obj = klass(**kwargs)
             objects.append(obj)
             print('%s を作成します' % obj)
     klass.objects.bulk_create(objects)
@@ -195,116 +196,126 @@ def textbook_chapter_create():
 
 
 def word_create():
-    grade = Grade.objects.get(name=2, school__name='中学')
     subject = Subject.objects.get(name='英語')
-    textbook_unit = TextbookUnit.objects.get(name="Unit1 Tina's Speech")
-    chap1, chap2, chap3, ycdi = textbook_unit.textbookchapter_set.all()
-    words = {
-        chap1: [
-            {
-                'name': 'came',
-                'mean': 'comeの過去形、来た'
-            }, {
-                'name': 'before',
-                'mean': '～の前に',
-            }, {
-                'name': 'city',
-                'mean': '市、都市、都会',
-            }, {
-                'name': 'best',
-                'mean': '最もよい、最良の、最良、最善',
-            }, {
-                'name': 'castle',
-                'mean': '城',
-            }, {
-                'name': 'view',
-                'mean': '眺め、景色',
-            }, {
-                'name': 'shopping',
-                'mean': '買い物',
-            }
-        ],
-        chap2: [
-            {
-                'name': 'was',
-                'mean': 'am，isの過去形',
-            }, {
-                'name': 'born',
-                'mean': '生まれる',
-            }, {
-                'name': 'grew',
-                'mean': 'growの過去形、成長した、育った',
-            }, {
-                'name': 'grow',
-                'mean': '成長する、育つ',
-            }, {
-                'name': 'spoke',
-                'mean': 'speakの過去形、話した',
-            }, {
-                'name': 'language',
-                'mean': '言語、言葉',
-            }, {
-                'name': 'were',
-                'mean': 'areの過去形',
-            }, {
-                'name': 'Mt.',
-                'mean': '山',
-            }, {
-                'name': 'kitchen',
-                'mean': '台所',
-            }, {
-                'name': 'exciting',
-                'mean': 'わくわくさせる、興奮させる',
-            }, {
-                'name': 'easy',
-                'mean': '簡単な',
-            }, {
-                'name': 'difficult',
-                'mean': '難しい',
-            }],
-        chap3: [
-            {
-                'name': 'question',
-                'mean': '質問',
-            }, {
-                'name': 'group',
-                'mean': '班、組',
-            }, {
-                'name': 'information',
-                'mean': '情報',
-            }, {
-                'name': 'Internet',
-                'mean': 'インターネット',
-            }, {
-                'name': 'special',
-                'mean': '特別な',
-            }, {
-                'name': 'friendly',
-                'mean': '友好的な、人なつっこい'
-            }
-        ],
-        ycdi: [
-            {
-                'name': 'stadium',
-                'mean': '競技場、スタジアム',
-            }, {
-                'name': 'won',
-                'mean': 'winの過去形、勝った',
-            }, {
-                'name': 'win',
-                'mean': '勝つ'
-            }
-        ],
-    }
+
+    words = [
+        {
+            'name': 'came',
+            'mean': 'comeの過去形、来た'
+        },
+        {
+            'name': 'before',
+            'mean': '～の前に',
+        }, {
+            'name': 'city',
+            'mean': '市、都市、都会',
+        }, {
+            'name': 'best',
+            'mean': '最もよい、最良の、最良、最善',
+        }, {
+            'name': 'castle',
+            'mean': '城',
+        }, {
+            'name': 'view',
+            'mean': '眺め、景色',
+        }, {
+            'name': 'shopping',
+            'mean': '買い物',
+        },
+        {
+            'name': 'was',
+            'mean': 'am，isの過去形',
+        }, {
+            'name': 'born',
+            'mean': '生まれる',
+        }, {
+            'name': 'grew',
+            'mean': 'growの過去形、成長した、育った',
+        }, {
+            'name': 'grow',
+            'mean': '成長する、育つ',
+        }, {
+            'name': 'spoke',
+            'mean': 'speakの過去形、話した',
+        }, {
+            'name': 'language',
+            'mean': '言語、言葉',
+        }, {
+            'name': 'were',
+            'mean': 'areの過去形',
+        }, {
+            'name': 'Mt.',
+            'mean': '山',
+        }, {
+            'name': 'kitchen',
+            'mean': '台所',
+        }, {
+            'name': 'exciting',
+            'mean': 'わくわくさせる、興奮させる',
+        }, {
+            'name': 'easy',
+            'mean': '簡単な',
+        }, {
+            'name': 'difficult',
+            'mean': '難しい',
+        },
+        {
+            'name': 'question',
+            'mean': '質問',
+        }, {
+            'name': 'group',
+            'mean': '班、組',
+        }, {
+            'name': 'information',
+            'mean': '情報',
+        }, {
+            'name': 'Internet',
+            'mean': 'インターネット',
+        }, {
+            'name': 'special',
+            'mean': '特別な',
+        }, {
+            'name': 'friendly',
+            'mean': '友好的な、人なつっこい'
+        },
+        {
+            'name': 'stadium',
+            'mean': '競技場、スタジアム',
+        }, {
+            'name': 'won',
+            'mean': 'winの過去形、勝った',
+        }, {
+            'name': 'win',
+            'mean': '勝つ'
+        }
+    ]
     args = [{
-        'grade': grade,
         'subject': subject,
-        'textbook_unit': textbook_unit,
-        'textbook_chapter': chapter,
         'name': word['name'],
         'mean': word['mean'],
-    } for chapter, chap_word in words.items() for word in chap_word]
+    } for word in words]
     base_create(Word, *args)
+
+
+def textbook_word_create():
+    textbook_unit = TextbookUnit.objects.get(name="Unit1 Tina's Speech")
+    chap1 = textbook_unit.textbookchapter_set.get(name='Part1')
+    chap2 = textbook_unit.textbookchapter_set.get(name='Part2')
+    chap3 = textbook_unit.textbookchapter_set.get(name='Part3')
+    ycdi = textbook_unit.textbookchapter_set.get(name='You Can Do It!')
+    unit_words = {
+        chap1: ['came', 'before', 'city', 'best', 'castle', 'view', 'shopping'],
+        chap2: ['was', 'born', 'grew', 'grow', 'spoke', 'language', 'were', 'Mt.', 'kitchen', 'exciting', 'easy',
+                'difficult'],
+        chap3: ['question', 'group', 'information', 'Internet', 'special', 'friendly'],
+        ycdi: ['stadium', 'won', 'win'],
+    }
+    textbook_words = [{
+        'textbook_unit': textbook_unit,
+        'textbook_chapter': chapter,
+        'word': Word.objects.get(name=word_name),
+    } for chapter, words in unit_words.items() for word_name in words]
+    base_create(TextbookWord, *textbook_words)
 
 
 class Command(BaseCommand):
@@ -318,3 +329,4 @@ class Command(BaseCommand):
         textbook_unit_create()
         textbook_chapter_create()
         word_create()
+        textbook_word_create()

@@ -9,10 +9,7 @@ User = get_user_model()
 
 class Word(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
-    grade = models.ForeignKey(to=Grade, on_delete=models.PROTECT)
     subject = models.ForeignKey(to=Subject, on_delete=models.PROTECT)
-    textbook_unit = models.ForeignKey(to=TextbookUnit, on_delete=models.PROTECT, blank=True, null=True)
-    textbook_chapter = models.ForeignKey(to=TextbookChapter, on_delete=models.PROTECT, blank=True, null=True)
     name = models.CharField(
         _('言葉'),
         max_length=100,
@@ -24,3 +21,10 @@ class Word(models.Model):
 
     def __str__(self):
         return 'word %s' % self.name
+
+
+class TextbookWord(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
+    textbook_unit = models.ForeignKey(to=TextbookUnit, on_delete=models.PROTECT)
+    textbook_chapter = models.ForeignKey(to=TextbookChapter, on_delete=models.PROTECT, blank=True, null=True)
+    word = models.ForeignKey(to=Word, on_delete=models.PROTECT)
