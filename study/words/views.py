@@ -2,7 +2,7 @@ from rest_framework.generics import ListAPIView, CreateAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import status
-from study.words.serializer import TextbookWordSerializer, WordPracticeSerializer, WordSerializer
+from study.words.serializer import WordPracticeSerializer, WordSerializer
 from study.words.models import Word, TextbookWord
 from study.models import StudySession, WordSession, WordGet
 from uuid import UUID
@@ -15,23 +15,8 @@ class WordGetView(ListAPIView):
     serializer_class = WordSerializer
 
     def get_queryset(self):
-        subject = self.kwargs.get('subject')
-        if subject == 'english':
-            query_set = self.queryset.filter(word__subject__name='英語')
-        elif subject == 'math':
-            query_set = self.queryset.filter(word__subject__name='数学')
-        else:
-            return
-
-        textbook_name = self.kwargs.get('textbook_name')
-        query_set = query_set.filter(textbook_unit__textbook__name=textbook_name)
-
-        unit_name = self.kwargs.get('unit_name')
-        if unit_name:
-            query_set = query_set.filter(textbook_unit__name=unit_name)
-            chapter_name = self.kwargs.get('chapter_name')
-            if chapter_name:
-                query_set = query_set.filter(textbook_chapter__name=chapter_name)
+        params = self.request.query_params.dict()
+        query_set = self.queryset.filter(**params)
         return Word.objects.filter(id__in=query_set.values_list('word', flat=True))
 
     def list(self, request, *args, **kwargs):
