@@ -5,7 +5,7 @@ import dj_database_url
 DEBUG = False
 
 ALLOWED_HOSTS += [
-    '.herokuapp.com',
+    'tutorportal.herokuapp.com',
     '127.0.0.1',
 ]
 
