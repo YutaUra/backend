@@ -2,11 +2,17 @@ from rest_framework.generics import ListAPIView, CreateAPIView
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import status
-from study.words.serializer import WordPracticeSerializer, WordSerializer
-from study.words.models import Word, TextbookWord
+from study.words.serializer import WordPracticeSerializer, WordSerializer, ModeSerializer
+from study.words.models import Word, TextbookWord, Mode
 from study.models import StudySession, WordSession, WordGet
 from uuid import UUID
 from users.models import User
+
+
+class WordModeGetView(ListAPIView):
+    permission_classes = [AllowAny, ]
+    queryset = Mode.objects.filter(subject__name='英語')
+    serializer_class = ModeSerializer
 
 
 class WordGetView(ListAPIView):
@@ -43,8 +49,10 @@ class WordAnswerView(CreateAPIView):
         for serializer in serializers:
             serializer.save()
 
-    def create_data(self, data):
+    def create_serializer(self, data):
         serializer = self.get_serializer(data=data)
+        print(serializer.is_valid())
+        print(data)
         serializer.is_valid(raise_exception=True)
         return serializer
 
@@ -65,20 +73,30 @@ class WordAnswerView(CreateAPIView):
         # sessionの作成
         session = StudySession.objects.create_or_get_current_session(request.user)
         sub_session = WordSession.objects.create_or_get_current_session(request.user, session=session)
+        sub_session = str(sub_session.pk)
         data = request.data
-        if isinstance(data, list):
+        if isinstance(data['answer'], list):
             """複数データ"""
             serializers = []
-            for d in data:
-                d['user'] = self.get_user_id(d['user'])
-                d['sub_session'] = sub_session.pk
-                serializers.append(self.create_data(d))
+            mode = data.get('mode')
+            user = str(request.user.pk)
+            for ans in data['answer']:
+                d = dict(
+                    mode=mode,
+                    user=user,
+                    sub_session=sub_session,
+                    word=ans['word'],
+                    answer=ans['answer'],
+                )
+                serializers.append(self.create_serializer(d))
             self.save_serializers(*serializers)
         elif isinstance(data, dict):
             """一つのデータ"""
             data['user'] = self.get_user_id(data['user'])
             data['sub_session'] = sub_session.pk
-            serializer = self.create_data(data)
+            data['word'] = data['answer']['word']
+            data['answer'] = data['answer']['answer']
+            serializer = self.create_serializer(data)
             self.save_serializers(serializer)
 
         return Response(status=status.HTTP_201_CREATED)

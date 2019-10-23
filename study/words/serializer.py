@@ -1,6 +1,13 @@
 from rest_framework import serializers
 from study.models import Word, TextbookWord
+from study.words.models import Mode
 from study.words.session import WordPractice
+
+
+class ModeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Mode
+        fields = '__all__'
 
 
 class WordSerializer(serializers.ModelSerializer):
@@ -25,6 +32,7 @@ class WordPracticeSerializer(serializers.ModelSerializer):
     class Meta:
         model = WordPractice
         fields = (
+            'mode',
             'sub_session',
             'user',
             'word',

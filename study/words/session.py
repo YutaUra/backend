@@ -2,6 +2,7 @@ from django.db import models
 from study.base_session import BaseSubSession, BaseSessionItem
 from study.models import StudySession
 from study.words import Word
+from study.words.models import Mode
 
 
 class WordSession(BaseSubSession):
@@ -14,6 +15,7 @@ class WordGet(BaseSessionItem):
 
 
 class WordPractice(BaseSessionItem):
+    mode = models.ForeignKey(to=Mode, on_delete=models.PROTECT, blank=True, null=True)
     sub_session = models.ForeignKey(to=WordSession, on_delete=models.PROTECT, blank=True)
     word = models.ForeignKey(to=Word, on_delete=models.PROTECT, related_name='word')
     answer = models.ForeignKey(to=Word, on_delete=models.PROTECT, related_name='answer')

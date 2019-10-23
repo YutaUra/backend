@@ -28,3 +28,9 @@ class TextbookWord(models.Model):
     textbook_unit = models.ForeignKey(to=TextbookUnit, on_delete=models.PROTECT)
     textbook_chapter = models.ForeignKey(to=TextbookChapter, on_delete=models.PROTECT, blank=True, null=True)
     word = models.ForeignKey(to=Word, on_delete=models.PROTECT)
+
+
+class Mode(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True, editable=False)
+    subject = models.ForeignKey(to=Subject, on_delete=models.PROTECT, blank=True, null=True)
+    name = models.CharField(max_length=100)
