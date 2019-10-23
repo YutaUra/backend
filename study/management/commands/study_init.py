@@ -180,7 +180,7 @@ def mode_create():
             'subject': subject,
             'name': name
         }
-        for name in ['read', 'write']]
+        for name in ['英->日', '日->英']]
     base_create(Mode, *args)
 
 
