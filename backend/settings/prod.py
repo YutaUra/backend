@@ -9,6 +9,10 @@ ALLOWED_HOSTS += [
     '127.0.0.1',
 ]
 
+CORS_ORIGIN_WHITELIST = [
+    'https://tutorportal.herokuapp.com',
+]
+
 FRONTEND_POINT = {
     'PROTOCOL': 'https',
     'DOMAIN': 'tutorportal-web.herokuapp.com',
