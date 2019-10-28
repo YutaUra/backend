@@ -9,14 +9,18 @@ def textbook_unit_create():
         {
             'name': "Unit1 Tina's Speech",
             'textbook': textbook,
-        },
-        {
+        }, {
             'name': 'Unit2 Nick Helps a Dog',
             'textbook': textbook,
-        },
-        {
+        }, {
             'name': 'Unit3 Plans for the Summer',
             'textbook': textbook,
-        },
+        }, {
+            'name': 'Unit4 Taku Gets Lost',
+            'textbook': textbook,
+        }, {
+            'name': 'Let\'s Read 1 The Letter',
+            'textbook': textbook,
+        }
     ]
     base_create(TextbookUnit, *units)

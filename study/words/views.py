@@ -51,8 +51,6 @@ class WordAnswerView(CreateAPIView):
 
     def create_serializer(self, data):
         serializer = self.get_serializer(data=data)
-        print(serializer.is_valid())
-        print(data)
         serializer.is_valid(raise_exception=True)
         return serializer
 
