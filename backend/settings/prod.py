@@ -10,7 +10,7 @@ ALLOWED_HOSTS += [
 ]
 
 CORS_ORIGIN_WHITELIST = [
-    'https://tutorportal.herokuapp.com',
+    'https://tutorportal-web.herokuapp.com',
 ]
 
 FRONTEND_POINT = {
