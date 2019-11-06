@@ -1,7 +1,8 @@
 from django.conf import settings
 from django.core.management import BaseCommand
-from django.db.models.functions import datetime
 from django.template.loader import get_template
+import pytz
+import datetime
 
 from users.models import User
 
@@ -9,9 +10,11 @@ from users.models import User
 class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         users = User.objects.filter(_position='S')
+        tokyo = pytz.timezone('Asia/Tokyo')
         today = datetime.datetime.today()
-        today_min = datetime.datetime.combine(today, today.time().min)
-        today_max = datetime.datetime.combine(today, today.time().min)
+        time = datetime.time
+        today_min = datetime.datetime.combine(today, time.min, tokyo)
+        today_max = datetime.datetime.combine(today, time.max, tokyo)
         users = users.exclude(studysession__created_at__range=(today_min, today_max))
 
         context = {
