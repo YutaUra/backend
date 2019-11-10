@@ -65,3 +65,4 @@ class UserManager(BaseUserManager):
 
     def is_exist_email(self, email):
         return email in self.get_queryset().filter(is_active=True).values_list('email', flat=True)
+

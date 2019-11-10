@@ -1,10 +1,26 @@
 from django.db import models
-from study.models import Grade, Subject, TextbookUnit, TextbookChapter
+from study.models import Subject, TextbookUnit, TextbookChapter
 from django.utils.translation import ugettext_lazy as _
 import uuid
 from django.contrib.auth import get_user_model
+from django.db.models import Count, F, FloatField, ExpressionWrapper, Q
+from django.db.models.functions import Cast
 
 User = get_user_model()
+
+
+class WordManager(models.Manager):
+    def _words_score(self, **kwargs):
+        return self.filter(**kwargs).annotate(
+            score=ExpressionWrapper(
+                (Cast(Count('answer', filter=(Q(answer=F('word')))) + 1, FloatField())) /
+                (Cast(Count('answer') + 2, FloatField())),
+                FloatField()
+            )).order_by('score')
+
+    def review_words(self, user, mode, count=20):
+        print(self.filter(word__mode=mode, word__user=user))
+        return self._words_score(word__user=user, word__mode=mode)[:count]
 
 
 class Word(models.Model):
@@ -18,6 +34,7 @@ class Word(models.Model):
         _('意味'),
         max_length=100,
     )
+    objects = WordManager()
 
     def __str__(self):
         return 'word %s' % self.name

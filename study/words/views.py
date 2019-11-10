@@ -15,6 +15,18 @@ class WordModeGetView(ListAPIView):
     serializer_class = ModeSerializer
 
 
+class WordReviewView(ListAPIView):
+    permission_classes = [AllowAny, ]
+    serializer_class = WordSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        mode = self.request.query_params.get('mode')
+        query_set = Word.objects.review_words(user, mode)
+        print(query_set)
+        return query_set
+
+
 class WordGetView(ListAPIView):
     permission_classes = [AllowAny, ]
     queryset = TextbookWord.objects.all()
