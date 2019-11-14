@@ -21,6 +21,9 @@ def textbook_unit_create():
         }, {
             'name': 'Let\'s Read 1 The Letter',
             'textbook': textbook,
+        }, {
+            'name': 'Unit5 Aya\'s Time in Okinawa',
+            'textbook': textbook,
         }
     ]
     base_create(TextbookUnit, *units)

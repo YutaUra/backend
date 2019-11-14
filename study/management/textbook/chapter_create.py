@@ -45,6 +45,10 @@ def chapter_2_LR1():
     } for name in parts]
     base_create(TextbookChapter, *args)
 
+def chapter_2_5():
+    unit_name = 'Unit5 Aya\'s Time in Okinawa'
+    base_chapter_create(unit_name, 3)
+
 
 def textbook_chapter_create():
     chapter_2_1()
@@ -52,3 +56,4 @@ def textbook_chapter_create():
     chapter_2_3()
     chapter_2_4()
     chapter_2_LR1()
+    chapter_2_5()
